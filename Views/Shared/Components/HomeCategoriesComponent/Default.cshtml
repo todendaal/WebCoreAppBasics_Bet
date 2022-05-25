@@ -1,0 +1,29 @@
+﻿@model UserOrder
+@{
+
+    @using WebCoreAppBasics.Data
+
+    ProductCategoryData CatData = new ProductCategoryData();
+}
+
+
+<div class="row px-5 pt-5">
+@foreach(var itm in CatData.get_ProductCategories())
+{
+    
+                <div class="HomeCard col-md-4 mt-4 mt-sm-2 card-container" onclick="javascript:openCategoryProducts('@itm.Id.ToString()')">
+                    <div class="card text-center product p-1 pt-1 border-1 h-100 rounded-0">
+                        <img class="img-fluid d-block mx-auto" src="/ProductPics/@itm.ImageURL" alt="">
+                        <div class="card-body p-4 py-0 h-xs-440p">
+                            <h5 class="card-title font-weight-semi-bold mb-3 w-xl-220p mx-auto">@itm.Name</h5>
+                            <p>
+                                <em>
+                                   @itm.Description
+                                </em>
+                            </p>
+                            <p class="price">From R @itm.LowestPrice</p>
+                        </div>
+                    </div>
+                </div>
+}
+</div>

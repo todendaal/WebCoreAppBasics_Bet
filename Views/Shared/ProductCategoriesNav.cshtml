@@ -1,0 +1,18 @@
+﻿@using WebCoreAppBasics.Data
+
+@{
+    ProductCategoryData CatData = new ProductCategoryData();
+
+    @foreach (var itm in CatData.get_ProductCategories())
+    {
+        var urlname = "Detail/" + @itm.Name;
+        var navId = "nav_" + @itm.Id;
+
+        <li class="nav-item" id="@navId">
+            <a class="nav-link text-dark" href="javascript:openCategoryProducts('@itm.Id.ToString()')">@itm.Name</a>
+        </li>
+    }
+}
+
+
+

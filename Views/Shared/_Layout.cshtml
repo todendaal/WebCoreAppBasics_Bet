@@ -1,0 +1,278 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authentication
+@using System.Security.Claims
+@using WebCoreAppBasics.Data;
+
+@{
+    Guid userId = Guid.Empty;
+    Guid currentOrderID = Guid.Empty;
+    string CurrentTaxPrice = "R 0";
+    string CurrentItemQuantity = "0";
+    Order? LatestOrder = null;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        userId = Guid.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+        //get the latest Order if valid
+        OrderData oData = new OrderData();
+        LatestOrder = oData.get_CurrentOrder(userId);
+        if (LatestOrder != null)
+        {
+            currentOrderID = LatestOrder.Id;
+            CurrentTaxPrice = "R " + LatestOrder.TaxPrice;
+            CurrentItemQuantity = LatestOrder.NrItems.ToString();
+        }
+
+        //string UserEmail = await UserManager.
+    }
+
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebCoreAppBasics</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/all.css">
+    <style>
+        .card:hover {
+            transform: scale(1.1);
+        }
+
+        .HomeCard:hover {
+            cursor: pointer;
+            -webkit-filter: brightness(70%);
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/images/mcdonalds-logo.png" style="max-width:50px;" class="img-fluid" alt="McDonald's-Logo" org_title="" title="">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item bg-warning" id="nav_00000000-0000-0000-0000-000000000000">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <partial name="ProductCategoriesNav" />
+                    </ul>
+                </div>
+                <div class="float-end align-top">
+                    <button type="button" class="btn btn-sm btn-success position-relative" onclick="retrieveOrder()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fas fa-solid fa-cart-shopping"></i> <span class="h6 small"><small id="CurrentTaxPrice">@CurrentTaxPrice</small></span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark border-light border-1">
+                            <small id="CurrentItemQuantity">@CurrentItemQuantity</small>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+        </nav>
+    </header>
+    <div class="container">
+        @await Component.InvokeAsync("ProductCategoryHeaders", new Random().Next(1, 10))
+        @await Component.InvokeAsync("MealDetails", new Random().Next(1, 10))
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+        <div id="checkoutScreen" style="display:none;">
+            <div class="row">
+                <div class="col-12 bg-dark text-white">
+                    Checkout
+                </div>
+            </div>
+            <div id="OrderSuccess" style="display:none;">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Success! Your food is on the way.....</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <img style="width:100%" src="/Images/ontheway2.gif" />
+                    </div>
+                </div>
+            </div>
+            <div class="row"  id="OrderInProgress">
+                <div class="col-sm-5">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Product</td>
+                                <td>Size</td>
+                                <td class="text-end">Price</td>
+                                <td class="text-center">Quantity</td>
+                                <td class="text-end">Total</td>
+                            </tr>
+                        </thead>
+                        <tbody id="orderContent">
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-secondary text-white">
+                                <td colspan="3" class="text-center"><i>15% Tax</i></td>
+                                <td colspan="2" class="text-end" id="PopOrderTaxAmount_C"></td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td colspan="3" class="text-center"><h4>Total</h4></td>
+                                <td colspan="2" class="text-end h4" id="CurrentTaxPrice_C"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+                <div class="col-sm-7">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form class="row g-3 needs-validation" novalidate>
+                            <div class="col-sm-6">
+                                <label for="validationCustom01" class="form-label">First name</label>
+                                <input type="text" class="form-control" id="validationCustom01" value="" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="validationCustom02" class="form-label">Last name</label>
+                                <input type="text" class="form-control" id="validationCustom02" value="" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-3">Email:</div>
+                                <div class="col-9">@User.Identity.Name</div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-sm-3">Cell:</div>
+                                <div class="col-sm-9"><input maxlength="60" type="tel" class="form-control" required /></div>
+                            </div>
+                            <div class="row border-bottom border-top mt-2">
+                                <div class="col-12 bg-secondary text-white">Delivery Address:</div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-sm-3">Address 1:</div>
+                                <div class="col-sm-9"><input maxlength="60" type="text" class="form-control" value="100 Jan Smuts Avenue" required /></div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-sm-3">Address 2:</div>
+                                <div class="col-sm-9"><input maxlength="60" type="text" class="form-control" value="Houghton" required /></div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-sm-3">Address 3:</div>
+                                <div class="col-sm-9"><input maxlength="60" type="text" class="form-control" value="Johanesburg" /></div>
+                            </div>
+                            <div class="row border-bottom border-top mt-2">
+                                <div class="col-12 bg-secondary text-white">Payment Details:</div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-3">Credit Card Nr:</div>
+                                <div class="col-9"><input maxlength="15" type="number" class="form-control" value="1234567898765432" required /></div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-3">CID:</div>
+                                <div class="col-9"><input maxlength="5" type="number" class="form-control" value="911" required /></div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-3">Expiration Date:</div>
+                                <div class="col-9">
+                                    <input type="date" class="form-control" value="2025/01/01" required />
+                                </div>
+                            </div>
+                            <div class="col-12 float-end text-end">
+                                <button class="btn btn-danger text-white" onclick="CancelOrder('@currentOrderID')" type="button">Cancel Order</button>
+                                <button class="btn btn-primary" onclick="validateCheckout()" type="button">Checkout <i class="fa fa-arrow-turn-right"></i></button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    @*{*@
+                        <div class="alert alert-info mt-3" role="alert">
+                            Please <a class="nav-link" href="/Identity/Account/Register">Register</a> or <a class="nav-link text-dark" href="/Identity/Account/Login">Login</a> to confirm the orer and get it delivered. It is a quick process...
+                         </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div id="homescreen">
+
+            @await Component.InvokeAsync("HomeCategoriesComponent", new Random().Next(1, 10))
+
+           
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-solid fa-cart-shopping"></i> Shopping basket</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td>Product</td>
+                                    <td>Size</td>
+                                    <td class="text-center">Quantity</td>
+                                    <td class="text-end">Total</td>
+                                </tr>
+                            </thead>
+                            <tbody id="orderPopContent">
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-secondary text-white">
+                                    <td colspan="2" class="text-center"><i>15% Tax</i></td>
+                                    <td colspan="2" class="text-end" id="PopOrderTaxAmount">R0</td>
+                                </tr>
+                                <tr class="bg-success text-white">
+                                    <td colspan="4" class="text-end" id="PopOrderFullAmount">R0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger text-white" onclick="CancelOrder('@currentOrderID')" type="button">Cancel Order</button>
+                        <button type="button" class="btn btn-primary" onclick="OpenCheckOut()" data-bs-dismiss="modal">Checkout <i class="fas fa-solid fa-wallet"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:none;">
+            <input id="Order_CurrentUser" type="text" value="@userId" />
+            <input id="Order_CurrentOrder" type="text" value="@currentOrderID" />
+        </div>
+
+        <footer class="border-top footer text-muted" style="display:none;">
+            <div class="container">
+                &copy; 2022 - WebCoreAppBasics - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/APICalls.js"></script>
+        @RenderSection("Scripts", required: false)
+</body>
+</html>
