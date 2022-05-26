@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.1.3" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="font-awesome" Version="4.7.0" />
     <PackageReference Include="Font.Awesome" Version="5.15.4" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.8" />
@@ -19,11 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebCoreAppBasics.Entities\WebCoreAppBasics.Data.csproj" />
-    <ProjectReference Include="..\WebCoreAppBasics.Models\WebCoreAppBasics.Models.csproj" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>

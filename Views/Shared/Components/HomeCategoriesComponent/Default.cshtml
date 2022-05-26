@@ -1,4 +1,4 @@
-﻿@model UserOrder
+﻿
 @{
 
     @using WebCoreAppBasics.Data
@@ -11,7 +11,7 @@
 @foreach(var itm in CatData.get_ProductCategories())
 {
     
-                <div class="HomeCard col-md-4 mt-4 mt-sm-2 card-container" onclick="javascript:openCategoryProducts('@itm.Id.ToString()')">
+                <div class="HomeCard col-md-4 mt-4 mt-sm-2 card-container" onclick="javascript:openCategoryProducts('@itm.Id.ToString()',0)">
                     <div class="card text-center product p-1 pt-1 border-1 h-100 rounded-0">
                         <img class="img-fluid d-block mx-auto" src="/ProductPics/@itm.ImageURL" alt="">
                         <div class="card-body p-4 py-0 h-xs-440p">

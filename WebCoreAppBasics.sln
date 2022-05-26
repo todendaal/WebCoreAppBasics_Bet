@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCoreAppBasics", "WebCoreAppBasics.csproj", "{D0F8BE52-0E37-4D0D-8440-23EEF2E68818}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCoreAppBasics.Models", "..\WebCoreAppBasics.Models\WebCoreAppBasics.Models.csproj", "{D7B067A2-5911-4D54-8266-7D459BBAD5C7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCoreAppBasics.Data", "..\WebCoreAppBasics.Entities\WebCoreAppBasics.Data.csproj", "{339EA546-B3A0-4DA6-BA3F-5C6147ADEB1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCoreAppBasics", "WebCoreAppBasics.csproj", "{D0F8BE52-0E37-4D0D-8440-23EEF2E68818}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{D0F8BE52-0E37-4D0D-8440-23EEF2E68818}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0F8BE52-0E37-4D0D-8440-23EEF2E68818}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0F8BE52-0E37-4D0D-8440-23EEF2E68818}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7B067A2-5911-4D54-8266-7D459BBAD5C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7B067A2-5911-4D54-8266-7D459BBAD5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7B067A2-5911-4D54-8266-7D459BBAD5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7B067A2-5911-4D54-8266-7D459BBAD5C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{339EA546-B3A0-4DA6-BA3F-5C6147ADEB1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{339EA546-B3A0-4DA6-BA3F-5C6147ADEB1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{339EA546-B3A0-4DA6-BA3F-5C6147ADEB1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{339EA546-B3A0-4DA6-BA3F-5C6147ADEB1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

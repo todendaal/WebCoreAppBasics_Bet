@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using WebCoreAppBasics.Models;
 using WebCoreAppBasics.Data;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,12 +21,14 @@ namespace WebCoreAppBasics.Controllers
             return _db.get_Products();
         }
 
-        [HttpGet("{CategoryID}")]
-        public IEnumerable<Product> GetPerCategory(string CategoryID)
+        [HttpGet()]
+        public IEnumerable<Product> GetPerCategory(string CategoryID, int startIndex)
         {
             try
             {
-                return _db.get_ProductsPerCategory(Guid.Parse(CategoryID));
+                int endIndex = startIndex + 3;
+                List<Product> FullList = _db.get_ProductsPerCategory(Guid.Parse(CategoryID));
+                return FullList.Skip(startIndex).Take(3);
             }
             catch
             {

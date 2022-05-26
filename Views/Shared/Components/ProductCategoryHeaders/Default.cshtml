@@ -1,8 +1,20 @@
-﻿@model UserOrder
-
+﻿
 
 <div id="CategoryHeaders" class="CategoryHeaders" style="display:none;">
-    <div class='row px-5 pt-5' id="CategoryHeadersContent" >
-
-    </div>
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="javascript:openCategoryProducts('',1000)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item pgeNr1 active"><a class="page-link" href="javascript:openCategoryProducts('',0)">1</a></li>
+        <li class="page-item pgeNr2"><a class="page-link" href="javascript:openCategoryProducts('',3)">2</a></li>
+        <li class="page-item">
+            <a class="page-link" href="javascript:openCategoryProducts('',2000)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+    <div class='row px-5 pt-1' id="CategoryHeadersContent">
+    </div>    
 </div>

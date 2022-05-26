@@ -1,6 +1,6 @@
 ﻿
 var producHeaderString = "<div class='col-md-4 mt-1 mt-sm-0 card-container mb-2' >";
-producHeaderString += "<div class='card text-center product p-1 pt-1 border-1 h-100 rounded-0' >";
+producHeaderString += "<div class='HomeCard card text-center product p-1 pt-1 border-1 h-100 rounded-0' onclick='openProductMeals(\"*PARENTPRODUCTID*\")'>";
 producHeaderString += "<img class='img-fluid d-block mx-auto' src='/ProductPics/#IMAGEFILE#' alt='#PRODUCTNAME#'>";
 producHeaderString += "<div class='card-body p-2 py-0 h-xs-440p'><h5 class='card-title font-weight-semi-bold mb-3 w-xl-220p mx-auto'>#PRODUCTNAME#</h5>";
 producHeaderString += "<p><em>#PRODUCTDETAILS#</em></p><p class='price'><i>From R#PRODUCTMINPRICE#</i></p></div>";
@@ -32,7 +32,30 @@ function backToCategory() {
     $("#CategoryHeaders").show();
 }
 
-function openCategoryProducts(ItemID) {
+var LastProductCategoryID = "";
+var LastCategoryProductsStartIndex = 0;
+function openCategoryProducts(ItemID, StartIndex) {
+    if (ItemID != "") {
+        LastProductCategoryID = ItemID;
+        LastCategoryProductsStartIndex = 0;
+    }
+    if (StartIndex == 1000 && LastCategoryProductsStartIndex > 0) {
+        LastCategoryProductsStartIndex = LastCategoryProductsStartIndex - 3;
+    }
+    else if (StartIndex == 2000) {
+        LastCategoryProductsStartIndex = LastCategoryProductsStartIndex + 3;
+    }
+    else {
+        if (StartIndex < 999) {
+            LastCategoryProductsStartIndex = StartIndex;
+        }
+    }
+
+    //highlight page Number
+    $(".page-item").removeClass("active");
+    var pagename = ".pgeNr" + ((LastCategoryProductsStartIndex / 3) + 1);
+    $(pagename).addClass("active");
+
     $("#homescreen").hide();
     $("#CategoryHeadersContent").html("");
     $("#checkoutScreen").hide();
@@ -42,10 +65,11 @@ function openCategoryProducts(ItemID) {
     $("#OrderInProgress").show();
 
     $(".nav-item").removeClass("bg-warning");
-    var newNav = "#nav_" + ItemID;
+    var newNav = "#nav_" + LastProductCategoryID;
     $(newNav).addClass("bg-warning");
 
-    var ApiStr = '/api/Product_API_/GetPerCategory/' + ItemID;
+
+    var ApiStr = '/api/Product_API_/GetPerCategory?CategoryID=' + LastProductCategoryID + "&startIndex=" + LastCategoryProductsStartIndex;
     $.getJSON(ApiStr, function (json) {
         for (var key in json) {
             var value = json[key];
@@ -56,20 +80,21 @@ function openCategoryProducts(ItemID) {
                 addProductString = addProductString.replace("#PRODUCTDETAILS#", value.description);
                 addProductString = addProductString.replace("#PRODUCTMINPRICE#", value.price);
                 addProductString = addProductString.replace("*PARENTPRODUCTID*", value.id);
+                addProductString = addProductString.replace("*PARENTPRODUCTID*", value.id);
                 $("#CategoryHeadersContent").append(addProductString);
             }
         }
     });
 }
-    
 
 
-    function OpenCheckOut() {
-        $("#homescreen").hide();
-        $("#CategoryHeaders").hide();
-        $("#MealDetails").hide();
-        $("#checkoutScreen").show();
-    }
+
+function OpenCheckOut() {
+    $("#homescreen").hide();
+    $("#CategoryHeaders").hide();
+    $("#MealDetails").hide();
+    $("#checkoutScreen").show();
+}
 
 
 function openProductMeals(ItemID) {
@@ -116,8 +141,8 @@ function openProductMeals(ItemID) {
             addProductString = addProductString.replace("#SizeBtnL#", "");
         }
 
-        
-        
+
+
 
         $("#MealDetailsContent").html(addProductString);
     });
@@ -162,8 +187,8 @@ function CreateOrder() {
         $("#Order_CurrentOrder").val(currentOrderID);
         var apiStr2 = '/api/Order_API_/AddOrderProduct?OrderID=' + currentOrderID + "&MealProductID=" + SelectedProductID + "&Quantity=" + QuantityMtr
         $.getJSON(apiStr2, function (json2) {
-                retrieveOrder();
-            });
+            retrieveOrder();
+        });
     });
 
 
@@ -224,7 +249,7 @@ function retrieveOrder() {
 }
 
 
-function updateOrderProductQuatity(selectObject,IdValue) {
+function updateOrderProductQuatity(selectObject, IdValue) {
     var value = selectObject.value;
     var apiStr = '/api/Order_API_/Order_UpdateProductQuantity?ItemID=' + IdValue + "&Quantity=" + value;
     $.getJSON(apiStr, function (json) {
@@ -293,13 +318,13 @@ function validateCheckout() {
     var errorCount = 0;
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms)
-        .forEach(function (form) {            
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    errorCount++;
-                }
-                form.classList.add('was-validated')
+        .forEach(function (form) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+                errorCount++;
+            }
+            form.classList.add('was-validated')
         })
     if (errorCount == 0) {
         //Call Api to save the data and this would also go to pay service

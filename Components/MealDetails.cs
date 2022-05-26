@@ -9,11 +9,9 @@ namespace WebCoreAppBasics.Components
 {
     public class MealDetails : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(Guid Id)
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            UserOrder model = new UserOrder();
-            model.CatId = Id;
-            return View(model);
+            return View();
         }
     }
 }

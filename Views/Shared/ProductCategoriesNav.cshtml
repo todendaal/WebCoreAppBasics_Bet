@@ -9,7 +9,7 @@
         var navId = "nav_" + @itm.Id;
 
         <li class="nav-item" id="@navId">
-            <a class="nav-link text-dark" href="javascript:openCategoryProducts('@itm.Id.ToString()')">@itm.Name</a>
+            <a class="nav-link text-dark" href="javascript:openCategoryProducts('@itm.Id.ToString()',0)">@itm.Name</a>
         </li>
     }
 }
